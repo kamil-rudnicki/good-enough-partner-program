@@ -53,26 +53,32 @@ class Partner {
         );
 
         $leads = $this->db->fetchOne(
-            'SELECT COUNT(*) FROM leads l
+            'SELECT COUNT(DISTINCT l.lead_id) 
+            FROM leads l
             JOIN visits v ON v.visitor_id = l.visitor_id
             WHERE v.partner_id = ?',
             [$partnerId]
         );
 
         $transactions = $this->db->fetchAllAssociative(
-            'SELECT * FROM transactions WHERE partner_id = ? ORDER BY created_at DESC LIMIT 10',
+            'SELECT * FROM transactions 
+            WHERE partner_id = ? 
+            ORDER BY created_at DESC 
+            LIMIT 10',
             [$partnerId]
         );
 
         $totalCommission = $this->db->fetchOne(
-            'SELECT COALESCE(SUM(commission_in_cents), 0) FROM transactions WHERE partner_id = ?',
+            'SELECT COALESCE(SUM(commission_in_cents), 0) 
+            FROM transactions 
+            WHERE partner_id = ?',
             [$partnerId]
         );
 
         return [
-            'totalVisits' => $visits,
-            'totalLeads' => $leads,
-            'totalCommission' => $totalCommission,
+            'totalVisits' => (int)$visits,
+            'totalLeads' => (int)$leads,
+            'totalCommission' => (int)$totalCommission,
             'transactions' => $transactions
         ];
     }

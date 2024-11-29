@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Partner Program Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Test Website</a>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="card-title">Sign Up</h1>
+                        <p class="card-text">Fill out this form to try our service.</p>
+                        
+                        <form id="leadForm" class="mt-4">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3>Debug Information</h3>
+                        <pre id="debugInfo">Loading...</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partner Tracking Script -->
+    <script src="http://localhost:8080/tracking.js"></script>
+
+    <!-- Debug Script -->
+    <script>
+        function updateDebugInfo() {
+            const debugInfo = {
+                cookies: document.cookie,
+                url: window.location.href,
+                visitorId: getCookie('tc_visitor'),
+                partnerId: getCookie('tc_partner')
+            };
+            
+            document.getElementById('debugInfo').textContent = 
+                JSON.stringify(debugInfo, null, 2);
+        }
+
+        // Update debug info every second
+        setInterval(updateDebugInfo, 1000);
+        updateDebugInfo();
+    </script>
+
+    <!-- Lead Form Handler -->
+    <script>
+        document.getElementById('leadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const visitorId = getCookie('tc_visitor');
+            
+            console.log('Submitting lead:', { email, visitorId });
+            
+            try {
+                const response = await fetch('http://localhost:8080/api/leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        visitor_id: visitorId
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Lead response:', data);
+                
+                if (response.ok) {
+                    alert('Thank you for signing up!');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Error: ' + (data.error || 'Failed to create lead'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to submit form. Please try again.');
+            }
+        });
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+    </script>
+</body>
+</html> 
