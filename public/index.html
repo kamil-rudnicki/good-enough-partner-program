@@ -115,32 +115,51 @@
             const email = document.getElementById('email').value;
             const code = document.getElementById('code').value;
 
-            if (!isWaitingForCode) {
-                // Request authentication code
-                const response = await fetch('/api/auth/request-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, isRegistering })
-                });
+            try {
+                if (!isWaitingForCode) {
+                    // Request authentication code
+                    const response = await fetch('/api/auth/request-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, isRegistering })
+                    });
 
-                if (response.ok) {
+                    const data = await response.json();
+                    
+                    if (response.status === 404) {
+                        alert('Partner not found. Please check your email or register as a new partner.');
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        alert(data.error || 'An error occurred. Please try again.');
+                        return;
+                    }
+
                     isWaitingForCode = true;
                     document.getElementById('codeInputContainer').classList.remove('d-none');
                     document.getElementById('submitBtn').textContent = 'Verify Code';
-                }
-            } else {
-                // Verify code
-                const response = await fetch('/api/auth/verify-code', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, code })
-                });
+                } else {
+                    // Verify code
+                    const response = await fetch('/api/auth/verify-code', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, code })
+                    });
 
-                if (response.ok) {
                     const data = await response.json();
+                    
+                    if (!response.ok) {
+                        alert(data.error || 'Invalid or expired code. Please try again.');
+                        return;
+                    }
+
                     localStorage.setItem('token', data.token);
                     showDashboard();
                 }
+            } catch (error) {
+                console.error('Authentication error:', error);
+                alert('An error occurred. Please try again later.');
             }
         });
 
@@ -156,12 +175,9 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
-            
+
             // Update partner links
-            document.getElementById('partnerCode').value = data.partnerLink.code;
             document.getElementById('productionLink').value = data.partnerLink.fullUrl;
-            document.getElementById('testLink').value = data.partnerLink.testUrl;
-            document.getElementById('testLinkBtn').href = data.partnerLink.testUrl;
             
             document.getElementById('totalVisits').textContent = data.totalVisits;
             document.getElementById('totalLeads').textContent = data.totalLeads;
