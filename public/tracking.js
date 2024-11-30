@@ -12,27 +12,46 @@
         return urlParams.get(param);
     }
 
+    function getDomainRoot() {
+        const hostname = window.location.hostname;
+        // Handle localhost separately
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return hostname;
+        }
+        // Get the root domain (e.g., 'timecamp.com' from 'app.timecamp.com')
+        const parts = hostname.split('.');
+        if (parts.length > 2) {
+            return '.' + parts.slice(-2).join('.');
+        }
+        return '.' + hostname;
+    }
+
     function setCookie(name, value, days) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        const expires = "; expires=" + date.toUTCString();
         
-        // Set cookie for current domain and all subdomains
-        const domain = window.location.hostname.split('.').slice(-2).join('.');
-        const cookieValue = name + "=" + (value || "") + expires + "; path=/";
-        
-        console.log('Setting cookie:', cookieValue);
-        document.cookie = cookieValue;
-        
-        // Also set for localhost if we're in development
-        if (window.location.hostname === 'localhost') {
-            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        const cookieOptions = [
+            name + "=" + (value || ""),
+            "expires=" + date.toUTCString(),
+            "path=/",
+            "domain=" + getDomainRoot(),
+            "SameSite=Lax"
+        ];
+
+        // Add Secure flag if on HTTPS
+        if (window.location.protocol === 'https:') {
+            cookieOptions.push('Secure');
         }
+
+        const cookieString = cookieOptions.join('; ');
+        console.log('Setting cookie:', cookieString);
+        document.cookie = cookieString;
     }
 
     function getCookie(name) {
         console.log('Getting cookie:', name);
         console.log('All cookies:', document.cookie);
+        console.log('Domain root:', getDomainRoot());
         
         const nameEQ = name + "=";
         const ca = document.cookie.split(';');
@@ -52,7 +71,10 @@
     function trackVisit(partnerId, visitorId) {
         console.log('Tracking visit:', { partnerId, visitorId });
         
-        fetch('http://localhost:8080/api/track-visit', {
+        // Get the API URL based on the current domain
+        const apiUrl = window.location.protocol + '//' + window.location.host;
+        
+        fetch(apiUrl + '/api/track-visit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,6 +92,8 @@
     // Main tracking logic
     function init() {
         console.log('Initializing tracking script');
+        console.log('Current hostname:', window.location.hostname);
+        console.log('Domain root:', getDomainRoot());
         
         const partnerCode = getQueryParam('partner');
         console.log('Partner code from URL:', partnerCode);
