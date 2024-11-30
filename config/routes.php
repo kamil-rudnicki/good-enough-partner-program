@@ -48,8 +48,8 @@ $app->group('/api', function (RouteCollectorProxy $group) use ($authMiddleware) 
 });
 
 // Static file routes
-$app->get('/tracking.js', function (Request $request, Response $response) {
-    $response->getBody()->write(file_get_contents(__DIR__ . '/../public/tracking.js'));
+$app->get('/integration.j4fn2k.js', function (Request $request, Response $response) {
+    $response->getBody()->write(file_get_contents(__DIR__ . '/../public/integration.j4fn2k.js'));
     return $response
         ->withHeader('Content-Type', 'application/javascript')
         ->withHeader('Cache-Control', 'public, max-age=3600');

@@ -70,8 +70,12 @@ class ApiController {
         $partnerId = $request->getAttribute('partner_id');
         $data = $this->partnerModel->getDashboardData($partnerId);
         
-        $data['partnerLink'] = $_ENV['APP_URL'] . '?partner=' . 
-            $this->db->fetchOne('SELECT link_code FROM partners WHERE partner_id = ?', [$partnerId]);
+        $linkCode = $this->db->fetchOne('SELECT link_code FROM partners WHERE partner_id = ?', [$partnerId]);
+        $data['partnerLink'] = [
+            'code' => $linkCode,
+            'fullUrl' => $_ENV['PARTNER_LINK_URL'] . '?partner=' . $linkCode,
+            'testUrl' => 'http://localhost:8000?partner=' . $linkCode
+        ];
 
         return $this->jsonResponse($response, $data);
     }

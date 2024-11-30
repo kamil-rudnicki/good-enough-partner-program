@@ -59,7 +59,7 @@ PostgreSQL database with the following tables:
 
 5. The application will be available at:
    - Partner Panel: http://localhost:8080
-   - Tracking Script: http://localhost:8080/tracking.js
+   - Tracking Script: http://localhost:8080/integration.j4fn2k.js
 
 ## Usage
 
@@ -72,7 +72,7 @@ PostgreSQL database with the following tables:
 ### Tracking Integration
 Add the following script to your website:
 ```html
-<script src="http://localhost:8080/tracking.js"></script>
+<script src="http://localhost:8080/integration.j4fn2k.js"></script>
 ```
 
 ### Creating Leads
