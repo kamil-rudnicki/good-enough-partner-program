@@ -1,6 +1,6 @@
-# TimeCamp Partner Program
+# Easy Partner Program
 
-A complete partner program management system for TimeCamp, featuring partner registration, visit tracking, lead management, and commission calculations.
+A complete partner program management system, featuring partner registration, visit tracking, lead management, and commission calculations.
 
 ## Features
 

@@ -18,7 +18,6 @@
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return hostname;
         }
-        // Get the root domain (e.g., 'timecamp.com' from 'app.timecamp.com')
         const parts = hostname.split('.');
         if (parts.length > 2) {
             return '.' + parts.slice(-2).join('.');

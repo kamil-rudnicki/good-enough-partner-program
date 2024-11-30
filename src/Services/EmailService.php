@@ -21,14 +21,14 @@ class EmailService {
         $this->mailer->Port = $_ENV['SMTP_PORT'];
         
         // Set default sender
-        $this->mailer->setFrom('partners@timecamp.com', 'TimeCamp Partners');
+        $this->mailer->setFrom($_ENV['SMTP_FROM_EMAIL'], $_ENV['SMTP_FROM_NAME']);
     }
 
     public function sendAuthCode(string $email, string $code): void {
         try {
             $this->mailer->addAddress($email);
             $this->mailer->isHTML(true);
-            $this->mailer->Subject = 'Your TimeCamp Partner Program Authentication Code';
+            $this->mailer->Subject = 'Your Partner Program Authentication Code';
             
             $body = "
                 <h2>Authentication Code</h2>

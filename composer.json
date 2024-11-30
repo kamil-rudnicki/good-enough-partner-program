@@ -1,5 +1,5 @@
 {
-    "name": "timecamp/easy-partner-program",
+    "name": "kamil-rudnicki/easy-partner-program",
     "description": "Partner program management system",
     "type": "project",
     "require": {
@@ -22,8 +22,8 @@
     },
     "authors": [
         {
-            "name": "TimeCamp",
-            "email": "support@timecamp.com"
+            "name": "Kamil Rudnicki",
+            "email": "kamil.rudnicki@gmail.com"
         }
     ],
     "minimum-stability": "stable"
