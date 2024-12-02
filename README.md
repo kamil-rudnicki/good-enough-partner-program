@@ -1,4 +1,4 @@
-# Easy Partner Program
+# Good Enough Partner Program System
 
 A complete partner program management system, featuring partner registration, visit tracking, lead management, and commission calculations.
 
