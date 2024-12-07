@@ -18,6 +18,7 @@ CREATE TABLE visits (
 CREATE TABLE leads (
     lead_id SERIAL PRIMARY KEY,
     visitor_id VARCHAR(255),
+    partner_id VARCHAR(255),
     email VARCHAR(255) NOT NULL UNIQUE,
     external_id VARCHAR(255) UNIQUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

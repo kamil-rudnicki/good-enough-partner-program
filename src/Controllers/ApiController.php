@@ -43,17 +43,32 @@ class ApiController {
         $data = $request->getParsedBody();
         $email = $data['email'] ?? null;
         $visitorId = $data['visitor_id'] ?? null;
+        $partnerId = $data['partner_id'] ?? null;
         $externalId = $data['external_id'] ?? null;
+        $secret = $data['secret'] ?? null;
 
-        if (!$email || !$visitorId) {
+        if (!$email || !$visitorId || !$partnerId || !$secret) {
             return $this->jsonResponse($response, ['error' => 'Missing required parameters'], 400);
+        }
+
+        // Validate secret
+        if ($secret !== $_ENV['API_SECRET']) {
+            return $this->jsonResponse($response, ['error' => 'Invalid secret'], 403);
+        }
+
+        // Validate partner
+        $partner = $this->partnerModel->findByLinkCode($partnerId);
+        if (!$partner) {
+            return $this->jsonResponse($response, ['error' => 'Invalid partner ID'], 404);
         }
 
         try {
             $this->db->insert('leads', [
                 'visitor_id' => $visitorId,
+                'partner_id' => $partnerId,
                 'email' => $email,
-                'external_id' => $externalId
+                'external_id' => $externalId,
+                'created_at' => date('Y-m-d H:i:s')
             ]);
 
             return $this->jsonResponse($response, ['message' => 'Lead created successfully']);
@@ -69,14 +84,6 @@ class ApiController {
     public function getDashboard(Request $request, Response $response): Response {
         $partnerId = $request->getAttribute('partner_id');
         $data = $this->partnerModel->getDashboardData($partnerId);
-        
-        $linkCode = $this->db->fetchOne('SELECT link_code FROM partners WHERE partner_id = ?', [$partnerId]);
-        $data['partnerLink'] = [
-            'code' => $linkCode,
-            'fullUrl' => $_ENV['PARTNER_LINK_URL'] . '?partner=' . $linkCode,
-            'testUrl' => 'http://localhost:8000?partner=' . $linkCode
-        ];
-
         return $this->jsonResponse($response, $data);
     }
 

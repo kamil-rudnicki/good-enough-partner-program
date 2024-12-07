@@ -52,11 +52,12 @@ class Partner {
             [$partnerId]
         );
 
-        $leads = $this->db->fetchOne(
-            'SELECT COUNT(DISTINCT l.lead_id) 
-            FROM leads l
-            JOIN visits v ON v.visitor_id = l.visitor_id
-            WHERE v.partner_id = ?',
+        $partnerData = $this->db->fetchAssociative(
+            'SELECT p.link_code, COUNT(l.lead_id) as lead_count 
+            FROM partners p 
+            LEFT JOIN leads l ON l.partner_id = p.link_code 
+            WHERE p.partner_id = ? 
+            GROUP BY p.partner_id, p.link_code',
             [$partnerId]
         );
 
@@ -77,9 +78,14 @@ class Partner {
 
         return [
             'totalVisits' => (int)$visits,
-            'totalLeads' => (int)$leads,
+            'totalLeads' => (int)$partnerData['lead_count'],
             'totalCommission' => (int)$totalCommission,
-            'transactions' => $transactions
+            'transactions' => $transactions,
+            'partnerLink' => [
+                'code' => $partnerData['link_code'],
+                'fullUrl' => $_ENV['PARTNER_LINK_URL'] . '?partner=' . $partnerData['link_code'],
+                'testUrl' => 'http://localhost:8000?partner=' . $partnerData['link_code']
+            ]
         ];
     }
 } 
