@@ -69,7 +69,8 @@
             body: JSON.stringify({
                 partner_id: partnerId,
                 visitor_id: visitorId,
-                url: window.location.href
+                url: window.location.href,
+                referrer: document.referrer || null
             })
         })
         .catch(error => {});
