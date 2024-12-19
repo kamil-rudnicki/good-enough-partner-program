@@ -53,11 +53,11 @@ class Partner {
         );
 
         $partnerData = $this->db->fetchAssociative(
-            'SELECT p.link_code, COUNT(l.lead_id) as lead_count 
+            'SELECT p.link_code, p.email, COUNT(l.lead_id) as lead_count 
             FROM partners p 
             LEFT JOIN leads l ON l.partner_id = p.link_code 
             WHERE p.partner_id = ? 
-            GROUP BY p.partner_id, p.link_code',
+            GROUP BY p.partner_id, p.link_code, p.email',
             [$partnerId]
         );
 
@@ -77,6 +77,7 @@ class Partner {
         );
 
         return [
+            'email' => $partnerData['email'],
             'totalVisits' => (int)$visits,
             'totalLeads' => (int)$partnerData['lead_count'],
             'totalCommission' => (int)$totalCommission,

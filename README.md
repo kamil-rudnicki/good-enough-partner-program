@@ -99,6 +99,11 @@ The project uses:
 - Bootstrap for the frontend
 - JWT for authentication
 
+```
+docker-compose exec postgres psql -U partner_program -d partner_program
+ALTER TABLE leads ADD COLUMN partner_id VARCHAR(255);
+```
+
 ## Security Notes
 
 1. Always use HTTPS in production
