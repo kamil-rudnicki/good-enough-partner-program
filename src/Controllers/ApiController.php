@@ -20,6 +20,7 @@ class ApiController {
         $data = $request->getParsedBody();
         $partnerId = $data['partner_id'] ?? null;
         $visitorId = $data['visitor_id'] ?? null;
+        $url = $data['url'] ?? null;
 
         if (!$partnerId || !$visitorId) {
             return $this->jsonResponse($response, ['error' => 'Missing required parameters'], 400);
@@ -33,7 +34,8 @@ class ApiController {
         $this->db->insert('visits', [
             'partner_id' => $partner['partner_id'],
             'visitor_id' => $visitorId,
-            'visited_at' => date('Y-m-d H:i:s')
+            'visited_at' => date('Y-m-d H:i:s'),
+            'url' => $url
         ]);
 
         return $this->jsonResponse($response, ['message' => 'Visit tracked successfully']);

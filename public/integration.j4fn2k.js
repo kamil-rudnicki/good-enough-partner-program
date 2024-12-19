@@ -72,7 +72,7 @@
         
         // Get the API URL based on the current domain
         const apiUrl = window.location.protocol + '//' + window.location.host;
-        
+                
         fetch(apiUrl + '/api/track-visit', {
             method: 'POST',
             headers: {
@@ -80,7 +80,8 @@
             },
             body: JSON.stringify({
                 partner_id: partnerId,
-                visitor_id: visitorId
+                visitor_id: visitorId,
+                url: window.location.href
             })
         })
         .then(response => response.json())

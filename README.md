@@ -100,8 +100,17 @@ The project uses:
 - JWT for authentication
 
 ```
-docker-compose exec postgres psql -U partner_program -d partner_program
+docker compose exec postgres psql -U partner_program -d partner_program
 ALTER TABLE leads ADD COLUMN partner_id VARCHAR(255);
+ALTER TABLE visits ADD COLUMN url TEXT;
+select * from leads order by created_at desc;
+select * from visits order by visited_at desc;
+```
+
+```
+cd test-website
+php serve.php
+http://localhost:3000/?partner=IOUA01KE
 ```
 
 ## Security Notes
