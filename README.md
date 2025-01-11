@@ -105,12 +105,14 @@ ALTER TABLE leads ADD COLUMN partner_id VARCHAR(255);
 ALTER TABLE visits ADD COLUMN url TEXT;
 select * from leads order by created_at desc;
 select * from visits order by visited_at desc;
+select * from partners order by created_at desc;
 ```
 
 ```
 cd test-website
 php serve.php
 http://localhost:3000/?partner=IOUA01KE
+http://localhost:3000/?kfl_ln=IOUA01KE
 ```
 
 ## Security Notes

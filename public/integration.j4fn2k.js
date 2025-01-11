@@ -78,8 +78,8 @@
 
     // Main tracking logic
     function init() {
-        // Get partner code from URL or cookie
-        let partnerCode = getQueryParam('partner');
+        // Get partner code from URL (checking both partner and kfl_ln parameters) or cookie
+        let partnerCode = getQueryParam('partner') || getQueryParam('kfl_ln');
         if (!partnerCode) {
             partnerCode = getCookie(PARTNER_COOKIE_NAME);
         }
