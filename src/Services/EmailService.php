@@ -11,6 +11,15 @@ class EmailService {
     public function __construct() {
         $this->mailer = new PHPMailer(true);
         
+        // Disable SSL certificate verification
+        $this->mailer->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ];
+        
         // Configure SMTP
         $this->mailer->isSMTP();
         $this->mailer->Host = $_ENV['SMTP_HOST'];
