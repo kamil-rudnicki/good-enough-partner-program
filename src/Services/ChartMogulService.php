@@ -175,7 +175,7 @@ class ChartMogulService {
         }
     }
 
-    public function updateTransactionsData(): Null
+    public function updateTransactionsData(): void
     {
         $leads = $this->fetchLeadsFromDatabase();
         foreach ($leads as $lead) {
