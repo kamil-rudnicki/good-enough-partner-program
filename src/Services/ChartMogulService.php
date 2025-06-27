@@ -20,6 +20,7 @@ class ChartMogulService {
     private Connection $db;
     private Configuration $chartMogulConfig;
     private \ChartMogul\Http\Client $chartMogulClient;
+    private string $leadsDataSourceUuid;
 
     public function __construct(Connection $db) {
         $this->apiKey = $_ENV['CHARTMOGUL_API_KEY'];
@@ -29,6 +30,7 @@ class ChartMogulService {
             $_ENV['CHARTMOGUL_API_KEY']
         );
         $this->chartMogulClient = new \ChartMogul\Http\Client($this->chartMogulConfig);
+        $this->leadsDataSourceUuid = $_ENV['CHARTMOGUL_LEADS_DATA_SOURCE_UUID'];
     }
 
     public function syncTransactions(): void {
@@ -104,13 +106,11 @@ class ChartMogulService {
         return json_decode($response, true)['entries'] ?? [];
     }
 
-    private const LeadsDataSourceUuid = 'ds_dc222bc6-d737-11ef-9cda-0323f5bb821e';
-
     public function findCustomerByExternalId(string $externalId): ?Customer
     {
         try {
             $customer = Customer::findByExternalId([
-                "data_source_uuid" => self::LeadsDataSourceUuid,
+                "data_source_uuid" => $this->leadsDataSourceUuid,
                 "external_id" => $externalId
             ], $this->chartMogulClient);
 
