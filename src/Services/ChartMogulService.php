@@ -159,8 +159,6 @@ class ChartMogulService {
                  VALUES (:transaction_id, :total_amount_in_cents, :is_paid, :commission_in_cents, :partner_id, :lead_id)
                  ON CONFLICT (transaction_id) DO UPDATE SET
                     total_amount_in_cents = EXCLUDED.total_amount_in_cents,
-                    is_paid = EXCLUDED.is_paid,
-                    commission_in_cents = EXCLUDED.commission_in_cents,
                     partner_id = EXCLUDED.partner_id,
                     lead_id = EXCLUDED.lead_id',
                 [
